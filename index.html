@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>REST API Demo</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Parallel layout */
+        .api-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .section {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+
+        .section h3 {
+            margin-top: 0;
+        }
+
+        input {
+            width: 95%;
+            padding: 10px;
+            margin: 6px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #333;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #eee;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+
+        /* Mobile */
+        @media (max-width: 700px) {
+            .api-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>REST API Demo</h1>
+
+    <div class="api-container">
+
+        <!-- GET -->
+        <div class="section">
+
+            <h3>GET - Hello</h3>
+
+            <button onclick="getHello()">
+                GET 
+            </button>
+
+        </div>
+
+
+        <!-- POST -->
+        <div class="section">
+
+            <h3>POST - Create User</h3>
+
+            <input
+                type="number"
+                id="postUserId"
+                placeholder="User ID"
+            >
+
+            <input
+                type="text"
+                id="postName"
+                placeholder="Name"
+            >
+
+            <input
+                type="number"
+                id="postAge"
+                placeholder="Age"
+            >
+
+            <button onclick="createUser()">
+                POST 
+            </button>
+
+        </div>
+
+
+        <!-- PUT -->
+        <div class="section">
+
+            <h3>PUT - Update User</h3>
+
+            <input
+                type="number"
+                id="putUserId"
+                placeholder="User ID"
+            >
+
+            <input
+                type="text"
+                id="putName"
+                placeholder="Name"
+            >
+
+            <input
+                type="number"
+                id="putAge"
+                placeholder="Age"
+            >
+
+            <button onclick="updateUser()">
+                PUT 
+            </button>
+
+        </div>
+
+
+        <!-- PATCH -->
+        <div class="section">
+
+            <h3>PATCH - Partial Update</h3>
+
+            <input
+                type="number"
+                id="patchUserId"
+                placeholder="User ID"
+            >
+
+            <input
+                type="number"
+                id="patchAge"
+                placeholder="New Age"
+            >
+
+            <button onclick="patchUser()">
+                PATCH
+            </button>
+
+        </div>
+
+
+        <!-- DELETE -->
+        <div class="section">
+
+            <h3>DELETE - Delete User</h3>
+
+            <input
+                type="number"
+                id="deleteUserId"
+                placeholder="User ID"
+            >
+
+            <button onclick="deleteUser()">
+                DELETE
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- Response -->
+
+    <h3>Response:</h3>
+
+    <div id="result">
+        Response will appear here...
+    </div>
+
+</div>
+
+
+<script>
+
+    const API_URL = "http://127.0.0.1:8000";
+
+
+    // GET
+    async function getHello() {
+
+        const response = await fetch(`${API_URL}/hello`);
+
+        const data = await response.json();
+
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    }
+
+
+    // POST
+    async function createUser() {
+
+        const userId =
+            document.getElementById("postUserId").value;
+
+        const name =
+            document.getElementById("postName").value;
+
+        const age =
+            document.getElementById("postAge").value;
+
+        const response = await fetch(
+            `${API_URL}/user?user_id=${userId}&name=${name}&age=${age}`,
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    }
+
+
+    // PUT
+    async function updateUser() {
+
+        const userId =
+            document.getElementById("putUserId").value;
+
+        const name =
+            document.getElementById("putName").value;
+
+        const age =
+            document.getElementById("putAge").value;
+
+        const response = await fetch(
+            `${API_URL}/user/${userId}?name=${name}&age=${age}`,
+            {
+                method: "PUT"
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    }
+
+
+    // PATCH
+    async function patchUser() {
+
+        const userId =
+            document.getElementById("patchUserId").value;
+
+        const age =
+            document.getElementById("patchAge").value;
+
+        const response = await fetch(
+            `${API_URL}/user/${userId}?age=${age}`,
+            {
+                method: "PATCH"
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    }
+
+
+    // DELETE
+    async function deleteUser() {
+
+        const userId =
+            document.getElementById("deleteUserId").value;
+
+        const response = await fetch(
+            `${API_URL}/user/${userId}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        document.getElementById("result").textContent =
+            JSON.stringify(data, null, 2);
+    }
+
+</script>
+
+</body>
+
+</html>
